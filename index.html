@@ -1,0 +1,142 @@
+    <!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>🖤 Countdown 🖤</title>
+  <style>
+    :root {
+      --bg-color: #000;
+      --text: #fff;
+      --glass-bg: rgba(255,255,255,0.08);
+      --accent: #ff3366;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      height: 100vh;
+      width: 100vw;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-color);
+      font-family: 'Poppins', sans-serif;
+      color: var(--text);
+      text-align: center;
+      overflow: hidden;
+    }
+
+    h1 {
+      font-size: 2.4rem;
+      margin-bottom: 24px;
+      font-weight: 600;
+      color: var(--accent);
+      text-shadow: 0 0 15px rgba(255, 51, 102, 0.8);
+    }
+
+    .countdown {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+      background: var(--glass-bg);
+      padding: 25px 40px;
+      border-radius: 20px;
+      box-shadow: 0 0 30px rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      animation: fadeIn 2s ease;
+    }
+
+    .unit {
+      min-width: 90px;
+      text-align: center;
+      padding: 10px 0;
+    }
+
+    .value {
+      font-size: 3rem;
+      font-weight: bold;
+      display: block;
+      color: var(--accent);
+      text-shadow: 0 0 20px rgba(255, 51, 102, 0.8);
+    }
+
+    .label {
+      font-size: 1rem;
+      opacity: 0.85;
+    }
+
+    footer {
+      margin-top: 40px;
+      font-size: 1rem;
+      opacity: 0.9;
+      color: #bbb;
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 1.8rem;
+      }
+      .countdown {
+        gap: 12px;
+        padding: 16px 20px;
+      }
+      .value {
+        font-size: 2rem;
+      }
+      .label {
+        font-size: 0.9rem;
+      }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+  <h1>🖤 Countdown 🖤</h1>
+  <div class="countdown" id="countdown">
+    <div class="unit"><span id="days" class="value">--</span><div class="label">Days</div></div>
+    <div class="unit"><span id="hours" class="value">--</span><div class="label">Hours</div></div>
+    <div class="unit"><span id="minutes" class="value">--</span><div class="label">Minutes</div></div>
+    <div class="unit"><span id="seconds" class="value">--</span><div class="label">Seconds</div></div>
+    <div class="unit"><span id="milliseconds" class="value">--</span><div class="label">Milliseconds</div></div>
+  </div>
+  <footer>Made with ❤️ for someone very special</footer>
+
+  <script>
+    const targetDate = new Date('2025-10-21T00:00:00+05:30');
+    const elDays = document.getElementById('days');
+    const elHours = document.getElementById('hours');
+    const elMinutes = document.getElementById('minutes');
+    const elSeconds = document.getElementById('seconds');
+    const elMilliseconds = document.getElementById('milliseconds');
+
+    function updateCountdown() {
+      const now = new Date();
+      const diff = targetDate - now;
+      if (diff <= 0) {
+        window.location.href = 'birthday.html';
+        return;
+      }
+      const totalSeconds = Math.floor(diff / 1000);
+      const days = Math.floor(totalSeconds / 86400);
+      const hours = Math.floor((totalSeconds % 86400) / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
+      const milliseconds = diff % 1000;
+
+      elDays.textContent = String(days).padStart(2, '0');
+      elHours.textContent = String(hours).padStart(2, '0');
+      elMinutes.textContent = String(minutes).padStart(2, '0');
+      elSeconds.textContent = String(seconds).padStart(2, '0');
+      elMilliseconds.textContent = String(milliseconds).padStart(3, '0');
+    }
+
+    updateCountdown();
+    setInterval(updateCountdown, 50);
+  </script>
+</body>
+</html>
