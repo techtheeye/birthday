@@ -1,17 +1,20 @@
-    <!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>🖤 Countdown 🖤</title>
+  <title> Countdown</title>
   <style>
     :root {
-      --bg-color: #000;
-      --text: #fff;
-      --glass-bg: rgba(255,255,255,0.08);
-      --accent: #ff3366;
+      --bg-color: radial-gradient(circle at top, #1a0f00 0%, #000 100%);
+      --text: #fff8e1;
+      --glass-bg: rgba(255, 255, 255, 0.08);
+      --accent: #ffcc33;
+      --glow: rgba(255, 204, 51, 0.8);
     }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
       height: 100vh;
       width: 100vw;
@@ -24,14 +27,16 @@
       color: var(--text);
       text-align: center;
       overflow: hidden;
+      position: relative;
     }
 
     h1 {
-      font-size: 2.4rem;
+      font-size: 2.8rem;
       margin-bottom: 24px;
       font-weight: 600;
       color: var(--accent);
-      text-shadow: 0 0 15px rgba(255, 51, 102, 0.8);
+      text-shadow: 0 0 25px var(--glow), 0 0 50px rgba(255, 153, 0, 0.6);
+      animation: flicker 2s infinite alternate;
     }
 
     .countdown {
@@ -42,7 +47,7 @@
       background: var(--glass-bg);
       padding: 25px 40px;
       border-radius: 20px;
-      box-shadow: 0 0 30px rgba(255, 255, 255, 0.15);
+      box-shadow: 0 0 40px rgba(255, 204, 51, 0.2);
       backdrop-filter: blur(10px);
       animation: fadeIn 2s ease;
     }
@@ -58,34 +63,36 @@
       font-weight: bold;
       display: block;
       color: var(--accent);
-      text-shadow: 0 0 20px rgba(255, 51, 102, 0.8);
+      text-shadow: 0 0 20px var(--glow), 0 0 50px rgba(255, 204, 51, 0.6);
     }
 
     .label {
       font-size: 1rem;
-      opacity: 0.85;
+      opacity: 0.9;
     }
 
     footer {
       margin-top: 40px;
       font-size: 1rem;
-      opacity: 0.9;
-      color: #bbb;
+      color: #ffeaa7;
+      text-shadow: 0 0 10px var(--glow);
+      animation: fadeIn 3s ease-in;
     }
 
     @media (max-width: 600px) {
-      h1 {
-        font-size: 1.8rem;
+      h1 { font-size: 2rem; }
+      .countdown { gap: 12px; padding: 16px 20px; }
+      .value { font-size: 2rem; }
+      .label { font-size: 0.9rem; }
+    }
+
+    /* Flicker animation for glowing text */
+    @keyframes flicker {
+      0%, 18%, 22%, 25%, 53%, 57%, 100% {
+        text-shadow: 0 0 25px var(--glow), 0 0 50px var(--glow);
       }
-      .countdown {
-        gap: 12px;
-        padding: 16px 20px;
-      }
-      .value {
-        font-size: 2rem;
-      }
-      .label {
-        font-size: 0.9rem;
+      20%, 24%, 55% {
+        text-shadow: none;
       }
     }
 
@@ -93,10 +100,47 @@
       from { opacity: 0; transform: scale(0.95); }
       to { opacity: 1; transform: scale(1); }
     }
+
+    /* Floating diyas animation */
+    .diya {
+      position: absolute;
+      width: 80px;
+      animation: floatUp 10s linear infinite;
+      opacity: 0.8;
+    }
+
+    .diya:nth-child(1) { left: 10%; animation-delay: 0s; }
+    .diya:nth-child(2) { left: 40%; animation-delay: 3s; }
+    .diya:nth-child(3) { left: 70%; animation-delay: 6s; }
+
+    @keyframes floatUp {
+      0% { bottom: -100px; transform: translateY(0) scale(1); opacity: 0; }
+      10% { opacity: 1; }
+      50% { transform: translateY(-300px) scale(1.1); }
+      100% { bottom: 120%; transform: translateY(-600px) scale(0.9); opacity: 0; }
+    }
+
+    /* Sparkles */
+    .sparkle {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+      animation: sparkle 2s infinite ease-in-out;
+      opacity: 0.6;
+    }
+
+    @keyframes sparkle {
+      0%, 100% { transform: scale(1); opacity: 0.8; }
+      50% { transform: scale(2); opacity: 0.2; }
+    }
+
   </style>
 </head>
 <body>
-  <h1>🖤 Countdown 🖤</h1>
+  <h1>🎇 Countdown 🎆</h1>
+
   <div class="countdown" id="countdown">
     <div class="unit"><span id="days" class="value">--</span><div class="label">Days</div></div>
     <div class="unit"><span id="hours" class="value">--</span><div class="label">Hours</div></div>
@@ -104,7 +148,13 @@
     <div class="unit"><span id="seconds" class="value">--</span><div class="label">Seconds</div></div>
     <div class="unit"><span id="milliseconds" class="value">--</span><div class="label">Milliseconds</div></div>
   </div>
-  <footer>Made with ❤️ for someone very special</footer>
+
+  <footer>wait for end</footer>
+
+  <!-- Floating Diyas -->
+  <img src="https://cdn-icons-png.flaticon.com/512/7645/7645820.png" class="diya" alt="diya">
+  <img src="https://cdn-icons-png.flaticon.com/512/7645/7645820.png" class="diya" alt="diya">
+  <img src="https://cdn-icons-png.flaticon.com/512/7645/7645820.png" class="diya" alt="diya">
 
   <script>
     const targetDate = new Date('2025-10-21T00:00:00+05:30');
@@ -137,6 +187,16 @@
 
     updateCountdown();
     setInterval(updateCountdown, 50);
+
+    // Add random sparkles
+    for (let i = 0; i < 20; i++) {
+      const sparkle = document.createElement('div');
+      sparkle.classList.add('sparkle');
+      sparkle.style.left = Math.random() * 100 + '%';
+      sparkle.style.top = Math.random() * 100 + '%';
+      sparkle.style.animationDelay = (Math.random() * 2) + 's';
+      document.body.appendChild(sparkle);
+    }
   </script>
 </body>
 </html>
