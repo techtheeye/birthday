@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Happy Birthday — Sakshi</title>
+  <meta name="description" content="A little animated birthday surprise for Sakshi — click the cake, open the surprise GIF, and enjoy!">
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Montserrat:wght@300;600&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0f1020;
+      --accent:#ff5b8a;
+      --accent-2:#ff9eb0;
+      --soft:#ffd6e8;
+      --card:#16161a;
+      --glass: rgba(255,255,255,0.06);
+      --confetti1:#ff6fa6;
+      --confetti2:#ffd36a;
+      --max-width:1000px;
+    }
+
+    /* base */
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Montserrat,system-ui,Segoe UI,Roboto,Arial;color:#fff;background:linear-gradient(160deg,var(--bg) 0%, #1b082d 60%);-webkit-font-smoothing:antialiased}
+    a{color:inherit}
+
+    /* layout */
+    .wrap{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:28px}
+    header{width:100%;max-width:var(--max-width);margin-top:18px;text-align:center}
+    h1{font-family:'Dancing Script',cursive;font-size:44px;margin:8px 0;color:var(--soft);text-shadow:0 6px 30px rgba(255,91,138,0.12)}
+    p.lead{opacity:0.92;margin-top:6px}
+
+    /* floating hearts (decorative) */
+    .hearts{position:fixed;left:0;right:0;top:0;bottom:0;pointer-events:none;z-index:10}
+    .heart{position:absolute;width:18px;height:18px;background:var(--accent);transform:rotate(45deg);border-radius:3px 3px 0 0;opacity:0.9}
+    .heart::after,.heart::before{content:"";position:absolute;width:18px;height:18px;background:var(--accent);border-radius:50%}
+    .heart::before{top:-9px;left:0}
+    .heart::after{left:9px;top:0}
+
+    /* card */
+    .card{width:100%;max-width:var(--max-width);background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:18px;padding:26px;margin:20px 0;box-shadow:0 10px 30px rgba(8,6,12,0.6);backdrop-filter:blur(6px)}
+
+    /* photo circle */
+    .photo-row{display:flex;gap:24px;align-items:center;flex-wrap:wrap;justify-content:center}
+    .photo-circle{width:220px;height:220px;border-radius:50%;background:linear-gradient(135deg,var(--soft),#ffdede);padding:8px;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 30px rgba(0,0,0,0.45), inset 0 2px 8px rgba(255,255,255,0.03)}
+    .photo-circle img{width:100%;height:100%;object-fit:cover;border-radius:50%;display:block}
+    .nameplate{text-align:center}
+    .nameplate h2{margin:8px 0 0;font-size:28px}
+    .nameplate p{margin:2px 0 0;opacity:0.9}
+
+    /* cake scene */
+    .cake-scene{display:flex;gap:30px;align-items:center;flex-direction:column}
+    .cake{position:relative;width:320px;height:260px;perspective:900px}
+    .cake .layer{position:absolute;left:50%;transform:translateX(-50%);width:280px;border-radius:14px;padding:14px;box-shadow:0 12px 30px rgba(0,0,0,0.55);transition:transform 700ms cubic-bezier(.22,.9,.15,1)}
+    .cake .layer.bottom{bottom:12px;height:92px;background:linear-gradient(180deg,#6a2c6f,#3b0b3d)}
+    .cake .layer.mid{bottom:96px;height:68px;background:linear-gradient(180deg,var(--accent-2),#ff6f9a)}
+    .cake .layer.top{bottom:172px;height:56px;background:linear-gradient(180deg,#fff4f8,#ffe5ef);box-shadow:0 10px 30px rgba(255,91,138,0.08)}
+    .cake .frosting{position:absolute;left:50%;transform:translateX(-50%);bottom:228px;width:200px;height:28px;border-radius:18px;background:linear-gradient(90deg,#ffd6e8,#fff);box-shadow:inset 0 -6px 8px rgba(0,0,0,0.03)}
+
+    /* candles & flame animation */
+    .candles{position:absolute;left:50%;transform:translateX(-50%);bottom:244px;display:flex;gap:8px}
+    .candle{width:8px;height:30px;background:#ffebc7;border-radius:3px;display:flex;align-items:flex-start;justify-content:center}
+    .flame{width:10px;height:14px;margin-top:-6px;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;background:linear-gradient(180deg,#ffd36a,#ff7b2b);filter:blur(.2px);transform-origin:center;animation:flame 1200ms infinite}
+    @keyframes flame{0%{transform:translateY(0) scale(1)}50%{transform:translateY(-4px) scale(1.06)}100%{transform:translateY(0) scale(1)}}
+
+    /* slices (invisible clickable wedges) */
+    .slices{position:absolute;left:50%;transform:translateX(-50%);bottom:196px;width:260px;height:260px;border-radius:50%;pointer-events:none}
+    .slice-btn{position:absolute;left:50%;top:50%;width:50%;height:50%;transform-origin:0% 0%;clip-path:polygon(0 0,100% 0,0 100%);background:transparent;border:none;pointer-events:auto;cursor:pointer}
+    .slice-btn:focus{outline:3px solid rgba(255,91,138,0.18);border-radius:10px}
+
+    /* create 6 slices by rotation using a data-angle attribute */
+    .slice-1{transform:translate(-50%,-50%) rotate(0deg)}
+    .slice-2{transform:translate(-50%,-50%) rotate(60deg)}
+    .slice-3{transform:translate(-50%,-50%) rotate(120deg)}
+    .slice-4{transform:translate(-50%,-50%) rotate(180deg)}
+    .slice-5{transform:translate(-50%,-50%) rotate(240deg)}
+    .slice-6{transform:translate(-50%,-50%) rotate(300deg)}
+
+    /* surprise */
+    .surprise{display:flex;flex-direction:column;align-items:center;gap:12px}
+    .surprise .placeholder{width:520px;max-width:95%;height:320px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));display:flex;align-items:center;justify-content:center;overflow:hidden}
+    .surprise img{width:100%;height:100%;object-fit:cover;display:block}
+    .btn{background:linear-gradient(90deg,var(--accent),#ff8fb8);border:none;padding:12px 18px;border-radius:999px;color:#fff;font-weight:600;cursor:pointer;box-shadow:0 8px 20px rgba(255,91,138,0.12)}
+    .btn.secondary{background:linear-gradient(90deg,#8c5bff,#6aa4ff)}
+
+    /* modal */
+    .modal-backdrop{position:fixed;inset:0;background:radial-gradient(circle at center, rgba(255,255,255,0.06), rgba(0,0,0,0.7));display:flex;align-items:center;justify-content:center;z-index:80}
+    .modal{width:92%;max-width:640px;background:linear-gradient(180deg,#fff0f6,rgba(255,255,255,0.02));border-radius:18px;padding:28px;text-align:center;box-shadow:0 30px 80px rgba(0,0,0,0.6)}
+    .modal h2{font-family:'Dancing Script';font-size:48px;margin:8px 0;color:#8b0146}
+    .modal p{margin:10px 0 16px;color:#40102a}
+
+    /* little responsive tweaks */
+    @media (max-width:700px){.photo-circle{width:160px;height:160px}.cake{width:260px;height:220px}.surprise .placeholder{height:220px}}
+
+    /* utility */
+    .visually-hidden{position:absolute!important;height:1px;width:1px;overflow:hidden;clip:rect(1px,1px,1px,1px);white-space:nowrap}
+  </style>
+</head>
+<body>
+  <div class="hearts" aria-hidden>
+    <!-- floating hearts generated by JS for decoration -->
+  </div>
+
+  <div class="wrap">
+    <header>
+      <h1>For Sakshi — a little surprise ✨</h1>
+      <p class="lead">Open, breathe, and enjoy — click around to reveal the surprise.</p>
+    </header>
+
+    <!-- MAIN CARD -->
+    <section class="card" aria-labelledby="photo-heading">
+      <div class="photo-row">
+        <div class="photo-circle" title="Sakshi">
+          <!-- Replace the src with your best single photo (220x220 recommended) -->
+          <img id="friend-photo" src="images/sakshi.jpg" alt="Photo of Sakshi" />
+        </div>
+        <div class="nameplate">
+          <h2 id="friend-name">Sakshi</h2>
+          <p>Wishing you all the laughter, cake and warm hugs today ❤️</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CAKE CARD -->
+    <section class="card cake-scene" aria-labelledby="cake-heading">
+      <h3 id="cake-heading" style="text-align:center;margin:0 0 8px">Make a wish — and cut the cake</h3>
+      <div class="cake" aria-hidden>
+        <div class="layer bottom" aria-hidden></div>
+        <div class="layer mid" aria-hidden></div>
+        <div class="layer top" aria-hidden></div>
+        <div class="frosting" aria-hidden></div>
+        <div class="candles" aria-hidden>
+          <div class="candle" aria-hidden><div class="flame" aria-hidden></div></div>
+          <div class="candle" aria-hidden><div class="flame" aria-hidden></div></div>
+          <div class="candle" aria-hidden><div class="flame" aria-hidden></div></div>
+        </div>
+
+        <div class="slices" id="slices">
+          <button class="slice-btn slice-1" data-angle="0" data-slice="1" aria-label="Cut slice 1" title="Cut slice 1"></button>
+          <button class="slice-btn slice-2" data-angle="60" data-slice="2" aria-label="Cut slice 2" title="Cut slice 2"></button>
+          <button class="slice-btn slice-3" data-angle="120" data-slice="3" aria-label="Cut slice 3" title="Cut slice 3"></button>
+          <button class="slice-btn slice-4" data-angle="180" data-slice="4" aria-label="Cut slice 4" title="Cut slice 4"></button>
+          <button class="slice-btn slice-5" data-angle="240" data-slice="5" aria-label="Cut slice 5" title="Cut slice 5"></button>
+          <button class="slice-btn slice-6" data-angle="300" data-slice="6" aria-label="Cut slice 6" title="Cut slice 6"></button>
+        </div>
+      </div>
+      <small style="opacity:0.85">Tip: click or press Enter/Space on a cake slice to cut it — try them all :)</small>
+    </section>
+
+    <!-- SURPRISE GIF CARD -->
+    <section class="card surprise" aria-labelledby="surprise-heading">
+      <h3 id="surprise-heading" style="margin:0">Open your surprise</h3>
+      <div class="placeholder" id="surprise-box">
+        <!-- Replace with your GIF or animated image for the reveal -->
+        <img id="surprise-img" src="images/surprise.gif" alt="Surprise animation" style="opacity:0.0;transform:scale(0.96);transition:all 650ms cubic-bezier(.2,.9,.15,1)"/>
+      </div>
+      <div style="display:flex;gap:12px;align-items:center">
+        <button class="btn" id="open-surprise">Open Surprise</button>
+        <button class="btn secondary" id="reset-all">Reset</button>
+      </div>
+    </section>
+
+    <footer style="margin-top:18px;opacity:0.9">Made with ❤️ — change the photo in <code>images/sakshi.jpg</code> and the GIF in <code>images/surprise.gif</code></footer>
+  </div>
+
+  <!-- POPUP modal (shows first) -->
+  <div class="modal-backdrop" id="modal" role="dialog" aria-modal="true">
+    <div class="modal" role="document">
+      <h2>Happy Birthday!</h2>
+      <p>Today is your day, Sakshi — here's a tiny page made with love. Click below to enter.</p>
+      <div class="close-cta">
+        <button class="btn" id="enter">Enter</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ---------- Decorative hearts ---------- */
+    (function generateHearts(){
+      const heartsRoot = document.querySelector('.hearts');
+      function rand(min,max){return Math.random()*(max-min)+min}
+      const count = 14;
+      for(let i=0;i<count;i++){
+        const h = document.createElement('div'); h.className='heart';
+        const left = rand(4,96); const size = rand(8,26);
+        h.style.left = left+'%'; h.style.top = rand(4,88)+'%'; h.style.width = size+'px'; h.style.height = size+'px';
+        h.style.opacity = rand(0.18,0.9);
+        h.style.transform = 'rotate('+rand(0,50)+'deg)';
+        const dur = rand(6,16);
+        h.style.animation = `floaty ${dur}s linear ${-rand(0,dur)}s infinite`;
+        heartsRoot.appendChild(h);
+      }
+      const style = document.createElement('style');
+      style.textContent = `@keyframes floaty{0%{transform:translateY(0) rotate(8deg)}100%{transform:translateY(-80px) rotate(-8deg)}}`;
+      document.head.appendChild(style);
+    })();
+
+    /* ---------- Modal enter action ---------- */
+    const modal = document.getElementById('modal');
+    const enterBtn = document.getElementById('enter');
+    function closeModal(){ modal.style.transition='opacity 420ms ease'; modal.style.opacity='0'; modal.setAttribute('aria-hidden','true'); setTimeout(()=>modal.style.display='none',420); }
+    enterBtn.addEventListener('click',()=>{ closeModal(); burstConfetti(34); });
+
+    /* accessible Enter/Space handling for modal and buttons */
+    document.addEventListener('keydown',(e)=>{
+      if(e.key==='Enter' || e.key===' '){
+        const active = document.activeElement;
+        if(active && active.classList && active.classList.contains('slice-btn')){ active.click(); e.preventDefault(); }
+      }
+      if(e.key==='Enter' && modal && modal.style.display!=='none'){ enterBtn.click(); }
+    });
+
+    /* ---------- Confetti (lightweight) ---------- */
+    function burstConfetti(n=30){
+      for(let i=0;i<n;i++){
+        const el=document.createElement('div'); el.style.position='fixed'; el.style.left='50%'; el.style.top='40%'; el.style.width='10px'; el.style.height='10px'; el.style.background=(i%2? getComputedStyle(document.documentElement).getPropertyValue('--confetti1') : getComputedStyle(document.documentElement).getPropertyValue('--confetti2')); el.style.borderRadius='2px'; el.style.zIndex=999; el.style.transform='translate(-50%,-50%) rotate('+Math.random()*360+'deg)';
+        document.body.appendChild(el);
+        const dx=(Math.random()-0.5)*900; const dy=-Math.random()*700; const rot = (Math.random()-0.5)*720;
+        el.animate([{transform:`translate(-50%,-50%) translate(0,0) rotate(0deg)`,opacity:1},{transform:`translate(-50%,-50%) translate(${dx}px,${dy}px) rotate(${rot}deg)`,opacity:0}],{duration:1100+Math.random()*800,fill:'forwards',easing:'cubic-bezier(.2,.9,.15,1)'});
+        setTimeout(()=>el.remove(),2200);
+      }
+    }
+
+    /* ---------- Cake slice interaction (fixed) ---------- */
+    const slices = document.querySelectorAll('.slice-btn');
+    slices.forEach(btn=>{
+      btn.addEventListener('click', (e)=>{
+        const slice = e.currentTarget;
+        if(slice.dataset.cut==='1') return; // already cut
+        slice.dataset.cut='1';
+        const angle = parseFloat(slice.dataset.angle || 0);
+        // animate slice pulling out along its rotated axis
+        const from = `translate(-50%,-50%) rotate(${angle}deg) translate(0,0)`;
+        const to   = `translate(-50%,-50%) rotate(${angle+18}deg) translate(60px,-60px)`;
+        slice.animate([{transform:from,opacity:1},{transform:to,opacity:0}],{duration:900,fill:'forwards',easing:'cubic-bezier(.2,.9,.15,1)'});
+
+        // context bubble anchored above cake
+        const bubble=document.createElement('div'); bubble.textContent='Yummy!'; bubble.style.position='absolute'; bubble.style.left='50%'; bubble.style.bottom='34%'; bubble.style.transform='translateX(-50%)'; bubble.style.padding='8px 12px'; bubble.style.borderRadius='999px'; bubble.style.background='rgba(255,255,255,0.06)'; bubble.style.backdropFilter='blur(4px)'; bubble.style.opacity='0'; bubble.style.zIndex=9999; document.body.appendChild(bubble);
+        bubble.animate([{opacity:0,transform:'translateY(10px)'},{opacity:1,transform:'translateY(0)'},{opacity:0,transform:'translateY(-10px)'}],{duration:1400,fill:'forwards'});
+        setTimeout(()=>bubble.remove(),1500);
+      });
+      // keyboard accessibility
+      btn.addEventListener('keydown', (e)=>{ if(e.key==='Enter' || e.key===' ') { e.preventDefault(); btn.click(); } });
+    });
+
+    /* ---------- Surprise reveal ---------- */
+    const surpriseImg = document.getElementById('surprise-img');
+    const openBtn = document.getElementById('open-surprise');
+    openBtn.addEventListener('click', ()=>{
+      surpriseImg.style.opacity='1'; surpriseImg.style.transform='scale(1)';
+      surpriseImg.animate([{transform:'scale(0.96) rotate(-4deg)'},{transform:'scale(1.02) rotate(2deg)'},{transform:'scale(1) rotate(0deg)'}],{duration:900,easing:'cubic-bezier(.2,.9,.15,1)'});
+      burstConfetti(28);
+    });
+
+    /* ---------- Reset functionality ---------- */
+    document.getElementById('reset-all').addEventListener('click', ()=>{
+      document.querySelectorAll('.slice-btn').forEach(s=>{ delete s.dataset.cut; s.style.opacity='1'; });
+      surpriseImg.style.opacity='0'; surpriseImg.style.transform='scale(.96)';
+      // show modal again
+      modal.style.display='flex'; modal.style.opacity='1'; modal.removeAttribute('aria-hidden');
+    });
+
+    /* ---------- Image fallback messages ---------- */
+    document.getElementById('friend-photo').addEventListener('error', (e)=>{
+      e.currentTarget.src='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400"><rect width="100%" height="100%" fill="%23ffd6e8"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="Arial" font-size="24" fill="%235a0b32">Add your photo at images/sakshi.jpg</text></svg>';
+    });
+    document.getElementById('surprise-img').addEventListener('error', (e)=>{
+      e.currentTarget.src='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="800" height="400"><rect width="100%" height="100%" fill="%23ffe9f2"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="Arial" font-size="20" fill="%23823a4a">Add a GIF at images/surprise.gif to see the surprise</text></svg>';
+    });
+
+    // small autofocus for accessibility
+    window.addEventListener('load', ()=>{ document.getElementById('enter').focus(); });
+  </script>
+</body>
+</html>
